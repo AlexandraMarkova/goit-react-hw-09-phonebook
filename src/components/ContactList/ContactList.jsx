@@ -18,7 +18,6 @@ const ContactList = ({ contacts, onDeleteContacts }) =>
           <IconButton
             aria-label="delete"
             color="secondary"
-            // className={classes.button}
             onClick={() => onDeleteContacts(id)}
           >
             <DeleteIcon />

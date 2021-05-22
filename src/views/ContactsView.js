@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Loader from 'react-loader-spinner';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
+import Loader from 'react-loader-spinner';
 
 import ContactForm from '../components/ContactForm';
 import ContactList from '../components/ContactList';
@@ -12,42 +12,33 @@ import { getLoading, getError } from '../redux/contact/contacts-selectors';
 const styles = {
   text: {
     textAlign: 'center',
-  }
+  },
 };
 
-class ContactsView extends Component {
- 
-  componentDidMount() {
-    this.props.fetchContacts();
-  }
-  render() {
-    return (
-      <div>
-        <h1 style={styles.text}>Phonebook</h1>
+export default function ContactsView() {
+  const dispatch = useDispatch();
+  const loading = useSelector(getLoading);
+  const error = useSelector(getError);
 
-        {this.props.isError && <h1>Sorry, please try later</h1>}
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
-        <ContactForm />
+  return (
+    <div>
+      <h1 style={styles.text}>Phonebook</h1>
 
-        <h2 style={styles.text}>Contacts</h2>
+      {error && <h1>Sorry, please try later</h1>}
 
-        <Filter />
-        {this.props.isLoadingContacts && (
-          <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
-        )}
-        <ContactList />
-      </div>
-    );
-  }
-}
+      <ContactForm />
 
-const mapStateToProps = state => ({
-  isLoadingContacts: getLoading(state),
-  isError: getError(state),
-});
+      <h2 style={styles.text}>Contacts</h2>
 
-const mapDispatchToProps = dispatch => ({
-  fetchContacts: () => dispatch(fetchContacts()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsView);
+      <Filter />
+      {loading && (
+        <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
+      )}
+      <ContactList />
+    </div>
+  );
+};
